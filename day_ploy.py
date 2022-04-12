@@ -40,7 +40,8 @@ def adding():
 
 				writer.writerow({
 				'Activity': activity_name,
-				'length': length
+				'length': length,
+                'ActLen': 0
 				})
                 
 def view_and_update():
@@ -50,8 +51,9 @@ def view_and_update():
     ratio_multiplier = int(daily_mins/length_column_total) # This calculates the value of the multiplier which we will use in order to calculate the actual length
     
     for i in MyDataFrame.index: # Iterates over the dataset
-        ActLen_cell_new = ratio_multiplier * MyDataFrame.at[i, 'length'] # Calculates the actual length using the user input and the multiplier
+        ActLen_cell_new = ratio_multiplier * MyDataFrame.at[i,'length'] # Calculates the actual length using the user input and the multiplier
         MyDataFrame.at[i,'ActLen'] = ActLen_cell_new # Selects the corresponding ActLen cell, and refreshes it with the new value (ActLen_cell_new)
+                                                     # TODO this value does not get added to the data.csv file, I need to make the program add it.
         
     print(MyDataFrame) # Prints the new updated table
 
