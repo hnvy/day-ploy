@@ -28,3 +28,4 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 - [ ] Rigid feature
 - [ ] Fixed feature (I need to first figure out the maths behind it)
 - [ ] There is an issue where ActLen is not being written into the CSV file
+- [ ] Think about whether we should use Pandas or JSON. The reason being is that currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
