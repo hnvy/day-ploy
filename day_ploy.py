@@ -1,4 +1,4 @@
-# This is an Open-source SuperMemo Plan alternative
+# This is an open-source SuperMemo Plan alternative
 # To learn more about SuperMemo Plan, please visit: https://help.supermemo.org/wiki/Plan
 # The program is pretty easy to use:
 ## Enter the list of the activities which you want to do today
