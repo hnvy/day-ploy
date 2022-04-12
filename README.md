@@ -21,3 +21,10 @@ Very simple:
 The program is still a massive work-in-progress. If you would like to contribute, then please do so!
 
 Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work. Then simply transform those concepts into Python letters and numbers to bring it to life!
+
+## TODO list
+- [ ] Need to make the program figure out the start time based on ActLen
+- [ ] Need to make the program add the start time to the CSV
+- [ ] Rigid feature
+- [ ] Fixed feature (I need to first figure out the maths behind it)
+- [ ] There is an issue where ActLen is not being written into the CSV file
