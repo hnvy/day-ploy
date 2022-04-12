@@ -41,7 +41,7 @@ def adding():
 				writer.writerow({
 				'Activity': activity_name,
 				'length': length,
-                'ActLen': 0
+                		'ActLen': 0
 				})
                 
 def view_and_update():
