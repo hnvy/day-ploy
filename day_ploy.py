@@ -21,28 +21,32 @@ daily_mins = int(16*60)
 
 # This is a function for adding new tasks to your CSV
 def adding():
-	while True: # This is just a loop that asks the user to enter the activity name and desired length
-		activity_name = input("Enter the name of your activity (enter . to quit adding): ")
-		if activity_name == ".":
-			break
-		else:
-			length = int(input("Enter length (in minutes): ")) # This will ask the user for the number of minutes
-			
+    while True: # This is just a loop that asks the user to enter the activity name and desired length
+        activity_name = input("Enter the name of your activity (enter . to quit adding): ")
+        if activity_name == ".":
+            break
+        else:
+            length = int(input("Enter length (in minutes): ")) # This will ask the user for the number of minutes
+            
             # TODO might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
-			with open(os.path.join(sys.path[0], 'data.csv'), mode='a', newline='') as csv_file:
-				fieldnames = [ # TODO another fieldname which is needed is the start time of each activity (make sure you add it in writer.writerow!)
-				'Activity',
-				'length',
-				'ActLen',
-				]
+            with open(os.path.join(sys.path[0], 'data.csv'), mode='a', newline='') as csv_file:
+                fieldnames = [ # TODO another fieldname which is needed is the start time of each activity (make sure you add it in writer.writerow!)
+                'fixed',
+                'rigid',
+                'Activity',
+                'length',
+                'ActLen',
+                ]
                 
-				writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
-				writer.writerow({
-				'Activity': activity_name,
-				'length': length,
-                		'ActLen': 0
-				})
+                writer.writerow({
+                'fixed': "-",
+                'rigid': "-",
+                'Activity': activity_name,
+                'length': length,
+                'ActLen': 0
+                })
                 
 def view_and_update():
     MyDataFrame = pandas.read_csv(os.path.join(sys.path[0],'data.csv'))
@@ -55,6 +59,17 @@ def view_and_update():
         MyDataFrame.at[i,'ActLen'] = ActLen_cell_new # Selects the corresponding ActLen cell, and refreshes it with the new value (ActLen_cell_new)
                                                      # TODO this value does not get added to the data.csv file, I need to make the program add it.
         
+        if MyDataFrame.at[i,'fixed'] == "T":
+            return
+        
+        elif MyDataFrame.at[i,'rigid'] == "T": # TODO a failing attempt at creating a rigid feature...
+            left_over = abs(MyDataFrame.at[i,'ActLen'] - MyDataFrame.at[i,'length'])
+            left_over_multiplier = int(left_over/length_column_total)
+            new_Act_len = MyDataFrame.at[i,'ActLen'] + (ratio_multiplier*left_over_multiplier)
+            MyDataFrame.at[i,'ActLen'] = new_Act_len
+            MyDataFrame.at[i,'ActLen'] = MyDataFrame.at[i,'length']
+            
+            
     print(MyDataFrame) # Prints the new updated table
 
 def repeater():
