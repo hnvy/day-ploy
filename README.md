@@ -17,12 +17,7 @@ Very simple:
 3. Enter the desired number of minutes which you would like to spend on each of these activities
 4. Let the program give you a more realistic number of minutes for each of your activities
 
-# Contributing
-The program is still a massive work-in-progress. If you would like to contribute, then please do so!
-
-Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work. Then simply transform those concepts into Python letters and numbers to bring it to life!
-
-## TODO list
+# TODO list
 - [ ] Need to make the program figure out the start time based on ActLen
 - [ ] Need to make the program add the start time to the CSV
 - [ ] Rigid feature
@@ -31,3 +26,8 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 - [ ] Think about whether we should use Pandas or JSON. The reason being is that, currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
   - [ ] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
 - [ ] Might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
+
+## Contributing
+The program is still a massive work-in-progress. If you would like to contribute, then please do so!
+
+Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work. Then simply transform those concepts into Python letters and numbers to bring it to life!
