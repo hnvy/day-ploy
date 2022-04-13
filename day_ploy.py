@@ -15,6 +15,8 @@ import sys
 
 # * Initialise
 
+data_file = os.path.join(sys.path[0],'data.csv') # This sets data_file variable to the location of data.csv (to speed up the process of pointing to the CSV file)
+
 daily_mins = int(16*60)
 
 # * Main
@@ -29,7 +31,7 @@ def adding():
             length = int(input("Enter length (in minutes): ")) # This will ask the user for the number of minutes
             
             # TODO might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
-            with open(os.path.join(sys.path[0], 'data.csv'), mode='a', newline='') as csv_file:
+            with open(data_file, mode='a', newline='') as csv_file:
                 fieldnames = [ # TODO another fieldname which is needed is the start time of each activity (make sure you add it in writer.writerow!)
                 'fixed',
                 'rigid',
@@ -49,7 +51,7 @@ def adding():
                 })
                 
 def view_and_update():
-    MyDataFrame = pandas.read_csv(os.path.join(sys.path[0],'data.csv'))
+    MyDataFrame = pandas.read_csv(data_file)
 
     length_column_total = MyDataFrame['length'].sum() # This will add up all of the values in the length column
     ratio_multiplier = int(daily_mins/length_column_total) # This calculates the value of the multiplier which we will use in order to calculate the actual length
@@ -57,7 +59,6 @@ def view_and_update():
     for i in MyDataFrame.index: # Iterates over the dataset
         ActLen_cell_new = ratio_multiplier * MyDataFrame.at[i,'length'] # Calculates the actual length using the user input and the multiplier
         MyDataFrame.at[i,'ActLen'] = ActLen_cell_new # Selects the corresponding ActLen cell, and refreshes it with the new value (ActLen_cell_new)
-                                                     # TODO this value does not get added to the data.csv file, I need to make the program add it.
         
         if MyDataFrame.at[i,'fixed'] == "T":
             return
@@ -71,7 +72,7 @@ def view_and_update():
             
             
     print(MyDataFrame) # Prints the new updated table
-
+    MyDataFrame.to_csv(data_file), index=False) # This updates the data.csv file.
 def repeater():
     repeat = input("What do you want to do now?\n1. Add tasks\n2. Open the table menu\n3. Close the application\n")
     if repeat == "1":
