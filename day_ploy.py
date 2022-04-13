@@ -72,7 +72,9 @@ def view_and_update():
             
             
     print(MyDataFrame) # Prints the new updated table
-    MyDataFrame.to_csv(data_file), index=False) # This updates the data.csv file.
+    
+    MyDataFrame.to_csv(data_file, index=False) # This updates the data.csv file.
+    
 def repeater():
     repeat = input("What do you want to do now?\n1. Add tasks\n2. Open the table menu\n3. Close the application\n")
     if repeat == "1":
