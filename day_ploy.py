@@ -5,7 +5,6 @@
 ## Enter the desired number of minutes which you would like to spend on each of these activities
 ## Let the program give you a more realistic number of minutes for each of your activities
 
-import time
 import datetime
 from datetime import datetime
 from datetime import timedelta
