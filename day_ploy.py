@@ -91,8 +91,9 @@ def repeater():
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
-        for list in list_of_stats:
-            del list[task_number]
+        for l in list_of_stats:
+            del l[task_number]
+            start_time[0] = "00:00"
         repeater()
     view_and_update()
 repeater()
