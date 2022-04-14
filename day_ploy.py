@@ -5,84 +5,93 @@
 ## Enter the desired number of minutes which you would like to spend on each of these activities
 ## Let the program give you a more realistic number of minutes for each of your activities
 
-# * Start
-
 import time
-import pandas
-import csv
+import datetime
+from datetime import datetime
+from datetime import timedelta
+import json
 import os
 import sys
 
-# * Initialise
+data_file = os.path.join(sys.path[0],'data.txt')
 
-data_file = os.path.join(sys.path[0],'data.csv') # This sets data_file variable to the location of data.csv (to speed up the process of pointing to the CSV file)
+daily_mins = 16*60
 
-daily_mins = int(16*60)
+with open(data_file, 'r') as json_file:
+    activity_obj = json.load(json_file)
+    fixed = activity_obj["fixed"]
+    rigid = activity_obj["rigid"]
+    start_time = activity_obj["start_time"]
+    name = activity_obj["name"]
+    length = activity_obj["length"]
+    ActLen = activity_obj["ActLen"]
 
-# * Main
-
-# This is a function for adding new tasks to your CSV
 def adding():
-    while True: # This is just a loop that asks the user to enter the activity name and desired length
-        activity_name = input("Enter the name of your activity (enter . to quit adding): ")
-        if activity_name == ".":
-            break
-        else:
-            length = int(input("Enter length (in minutes): ")) # This will ask the user for the number of minutes
-            
-            # TODO might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
-            with open(data_file, mode='a', newline='') as csv_file:
-                fieldnames = [ # TODO another fieldname which is needed is the start time of each activity (make sure you add it in writer.writerow!)
-                'fixed',
-                'rigid',
-                'Activity',
-                'length',
-                'ActLen',
-                ]
-                
-                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    with open(data_file, 'w') as json_file:
+        while True:
+            task_name_input = input("Enter the task name (type . to exit): ")
+            if task_name_input == ".":
+                break
+            else:
+                length_input = int(input("Enter the number of goal number of desired minutes: "))
+            fixed.append("-")
+            rigid.append("-")
+            name.append(task_name_input)
+            length.append(length_input)
+            ActLen.append(0)
+            json.dump(activity_obj, json_file, indent=1)
 
-                writer.writerow({
-                'fixed': "-",
-                'rigid': "-",
-                'Activity': activity_name,
-                'length': length,
-                'ActLen': 0
-                })
-                
 def view_and_update():
-    MyDataFrame = pandas.read_csv(data_file)
+    global fixed, rigid, start_time, name, length, ActLen
+    with open(data_file, 'w') as json_file:
+        list_length = len(name)
+        length_column_total = 1
+        for i in range(0,list_length):
+            length_column_total += length[i]
 
-    length_column_total = MyDataFrame['length'].sum() # This will add up all of the values in the length column
-    ratio_multiplier = int(daily_mins/length_column_total) # This calculates the value of the multiplier which we will use in order to calculate the actual length
-    
-    for i in MyDataFrame.index: # Iterates over the dataset
-        ActLen_cell_new = ratio_multiplier * MyDataFrame.at[i,'length'] # Calculates the actual length using the user input and the multiplier
-        MyDataFrame.at[i,'ActLen'] = ActLen_cell_new # Selects the corresponding ActLen cell, and refreshes it with the new value (ActLen_cell_new)
-        
-        if MyDataFrame.at[i,'fixed'] == "T":
-            return
-        
-        elif MyDataFrame.at[i,'rigid'] == "T": # TODO a failing attempt at creating a rigid feature...
-            left_over = abs(MyDataFrame.at[i,'ActLen'] - MyDataFrame.at[i,'length'])
-            left_over_multiplier = int(left_over/length_column_total)
-            new_Act_len = MyDataFrame.at[i,'ActLen'] + (ratio_multiplier*left_over_multiplier)
-            MyDataFrame.at[i,'ActLen'] = new_Act_len
-            MyDataFrame.at[i,'ActLen'] = MyDataFrame.at[i,'length']
-            
-            
-    print(MyDataFrame) # Prints the new updated table
-    
-    MyDataFrame.to_csv(data_file, index=False) # This updates the data.csv file.
-    
+        length_column_total -= 1
+        if length_column_total <= 0:
+            length_column_total = 1
+
+
+        ratio_multiplier = int(daily_mins/length_column_total)
+
+        for i in range(0,list_length):
+
+            start_time_format = datetime.strptime(start_time[i], "%H:%M")
+            ActLen[i] = int(ratio_multiplier * length[i])
+
+            new_start_time = start_time_format + timedelta(minutes=ActLen[i])
+            new_start_time_format = datetime.strftime(new_start_time, "%H:%M")
+            if i+1 >= list_length:
+                break
+            else:
+                start_time[i+1] = new_start_time_format
+
+        json.dump(activity_obj, json_file, indent=1)
+
+        pretty_fmt = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy)
+        print (pretty_fmt.format("Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen"))
+        for x in range(0,list_length):
+            fixed_value = fixed[x]
+            rigid_value = rigid[x]
+            start_time_value = start_time[x]
+            name_value = name[x]
+            length_value = length[x]
+            ActLen_value = ActLen[x]
+            print(pretty_fmt.format(fixed_value, rigid_value, start_time_value, name_value, length_value, ActLen_value))
+
 def repeater():
-    repeat = input("What do you want to do now?\n1. Add tasks\n2. Open the table menu\n3. Close the application\n")
+    view_and_update()
+    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n")
     if repeat == "1":
         adding()
         repeater()
-        
     elif repeat == "2":
-        view_and_update()
+        list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
+        task_number = int(input("Enter the INDEX of the task which you want to delete: "))
+        for list in list_of_stats:
+            del list[task_number]
         repeater()
 
 repeater() # My primitive method of looping the program :)
