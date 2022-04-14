@@ -53,7 +53,6 @@ def view_and_update():
         if length_column_total <= 0:
             length_column_total = 1
 
-
         ratio_multiplier = int(daily_mins/length_column_total)
 
         for i in range(0,list_length):
