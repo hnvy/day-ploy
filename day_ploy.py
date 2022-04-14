@@ -5,6 +5,7 @@
 ## Enter the desired number of minutes which you would like to spend on each of these activities
 ## Let the program give you a more realistic number of minutes for each of your activities
 
+import time
 import datetime
 from datetime import datetime
 from datetime import timedelta
@@ -81,18 +82,18 @@ def view_and_update():
             ActLen_value = ActLen[x]
             print(pretty_fmt.format(fixed_value, rigid_value, start_time_value, name_value, length_value, ActLen_value))
 
-def repeater():
-    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n")
+while 0 < 1:
+    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
     if repeat == "1":
         adding()
         view_and_update()
-        repeater()
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
         for l in list_of_stats:
             del l[task_number]
             start_time[0] = "00:00"
-        repeater()
-    view_and_update()
-repeater()
+    elif repeat == "3":
+        view_and_update()
+    else:
+        break
