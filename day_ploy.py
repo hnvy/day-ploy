@@ -36,6 +36,7 @@ def adding():
                 length_input = int(input("Enter the number of goal number of desired minutes: "))
             fixed.append("-")
             rigid.append("-")
+            start_time.append("00:00") # TODO Let the user pick their own start time through the program. But, for now, modify this value in order to set the start time of your day (HH:MM)!
             name.append(task_name_input)
             length.append(length_input)
             ActLen.append(0)
@@ -82,10 +83,10 @@ def view_and_update():
             print(pretty_fmt.format(fixed_value, rigid_value, start_time_value, name_value, length_value, ActLen_value))
 
 def repeater():
-    view_and_update()
     repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n")
     if repeat == "1":
         adding()
+        view_and_update()
         repeater()
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
@@ -93,5 +94,5 @@ def repeater():
         for list in list_of_stats:
             del list[task_number]
         repeater()
-
-repeater() # My primitive method of looping the program :)
+    view_and_update()
+repeater()
