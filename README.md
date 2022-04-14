@@ -12,7 +12,7 @@ This program is based on the concept behind [SuperMemo Plan](https://help.superm
 
 # How do you use it?
 Very simple:
-1. Put the CSV file in the same location as the code
+1. Put the txt file in the same location as the code
 2. Run the program and enter the list of the activities which you want to do today
 3. Enter the desired number of minutes which you would like to spend on each of these activities
 4. Let the program give you a more realistic number of minutes for each of your activities
