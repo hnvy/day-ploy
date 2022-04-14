@@ -18,13 +18,13 @@ Very simple:
 4. Let the program give you a more realistic number of minutes for each of your activities
 
 # TODO list
-- [ ] Need to make the program figure out the start time based on ActLen
-- [ ] Need to make the program add the start time to the CSV
+- [X] Need to make the program figure out the start time based on ActLen
+- [X] Need to make the program add the start time to the CSV
 - [ ] Rigid feature
 - [ ] Fixed feature (I need to first figure out the maths behind it)
 - [X] There is an issue where ActLen is not being written into the CSV file
-- [ ] Think about whether we should use Pandas or JSON. The reason being is that, currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
-  - [ ] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
+- [X] Think about whether we should use Pandas or JSON. The reason being is that, currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
+  - [X] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
 - [ ] Might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
 
 ## Contributing
