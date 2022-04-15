@@ -37,7 +37,7 @@ Very simple:
     winsound.Beep(1000,1000)
     print("timer!")
     break
-```
+  ```
 
 ## Contributing
 The program is still a massive work-in-progress. If you would like to contribute, then please do so!
