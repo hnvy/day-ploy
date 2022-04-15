@@ -26,6 +26,18 @@ Very simple:
 - [X] Think about whether we should use Pandas or JSON. The reason being is that, currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
   - [X] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
 - [ ] Might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
+- [ ] Create a timer. Perhaps use something like:
+  ```
+  import winsound
+  start_time = "13:00"
+  start_time_stripped = datetime.strptime(start_time, "%H:%M")
+  start_time_formatted = datetime.strftime(start_time_stripped, "%H:%M")
+  while True: # This consumes a lot of CPU, and is therefore not resource-friendly
+    if start_time_formatted == datetime.strftime(datetime.now(), "%H:%M"):
+    winsound.Beep(1000,1000)
+    print("timer!")
+    break
+```
 
 ## Contributing
 The program is still a massive work-in-progress. If you would like to contribute, then please do so!
