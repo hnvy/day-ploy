@@ -5,21 +5,25 @@
 ## Enter the desired number of minutes which you would like to spend on each of these activities
 ## Let the program give you a more realistic number of minutes for each of your activities
 
+# * Start
+
 import datetime
 from datetime import datetime
 from datetime import timedelta
 import json
 import os
 import sys
-import winsound
+# import winsound # This is a good library to use in order to create a lightweight alarm clock
 
-data_file = os.path.join(sys.path[0],'data.txt')
+# * Initialise
+
+data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable to the location of data.txt (to speed up the process of pointing to the file)
 
 daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration
 start_time_input = "00:00" # TODO Let the user pick their own start time through the program. But, for now, modify this value in order to set the start time of your day (HH:MM)!
 
-with open(data_file, 'r') as json_file:
-    activity_obj = json.load(json_file)
+with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
+    activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
     fixed = activity_obj["fixed"]
     rigid = activity_obj["rigid"]
     start_time = activity_obj["start_time"]
@@ -27,62 +31,57 @@ with open(data_file, 'r') as json_file:
     length = activity_obj["length"]
     ActLen = activity_obj["ActLen"]
 
-def adding():
-    with open(data_file, 'w') as json_file:
-        while True:
-            task_name_input = input("Enter the task name (type . to exit): ")
-            if task_name_input == ".":
+# * Main
+
+def adding(): # This function is for adding a new activity to the program
+    with open(data_file, 'w') as json_file: # Opens up data.txt as json_file in write mode
+        while True: # This is a loop which keeps asking the user to enter the activity name and desired number of minutes
+            task_name_input = input("Enter the task name (type . to exit): ") # Asks the user to enter the activity name
+            if task_name_input == ".": # If the user enters ".", the program will exit this loop
                 break
             else:
-                length_input = int(input("Enter the number of goal number of desired minutes: "))
-            fixed.append("-")
-            rigid.append("-")
-            start_time.append(start_time_input)
-            name.append(task_name_input)
-            length.append(length_input)
-            ActLen.append(0)
-            json.dump(activity_obj, json_file, indent=1)
+                length_input = int(input("Enter the number of goal number of desired minutes: ")) # This variable holds the desired number of minutes which the user will supply
+            fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed function.
+            rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid function.
+            start_time.append(start_time_input) # This writes the start time which is supplied by the user in the start_time field in data.txt
+            name.append(task_name_input) # Same thing as above but for a new variable
+            length.append(length_input) # Same thing as above but for a new variable
+            ActLen.append(0) # Same thing as above but for a new variable
+            json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
-def view_and_update():
-    global fixed, rigid, start_time, name, length, ActLen
-    with open(data_file, 'w') as json_file:
-        list_length = len(name)
-        length_column_total = 1
-        for i in range(0,list_length):
-            length_column_total += length[i]
+def view_and_update(): # This function refreshes the columns
+    global fixed, rigid, start_time, name, length, ActLen, start_time_input # This globalises the variables so that they can be used in this function.
+    with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
+        list_length = len(name) # This calculates the number of activities in our JSON file (data.txt)
+        length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
+        for i in range(0,list_length): # This is the loop which will go around the list of activities
+            length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
 
-        length_column_total -= 1
-        if length_column_total <= 0:
-            length_column_total = 1
+        length_column_total -= 1 # This will subtract the 1 we added earlier
+        if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
+            length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
 
-        ratio_multiplier = int(daily_mins/length_column_total)
+        ratio_multiplier = int(daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
 
-        for i in range(0,list_length):
+        for i in range(0,list_length): # This is the loop which will go around the list of activities
+            start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
+            ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
 
-            start_time_format = datetime.strptime(start_time[i], "%H:%M")
-            ActLen[i] = int(ratio_multiplier * length[i])
-
-            new_start_time = start_time_format + timedelta(minutes=ActLen[i])
-            new_start_time_format = datetime.strftime(new_start_time, "%H:%M")
-            if i+1 >= list_length:
-                break
+            new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
+            new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
+            if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
+                break # Stops the program
             else:
-                start_time[i+1] = new_start_time_format
+                start_time[i+1] = new_start_time_format # Writes the start time of each activity
 
-        json.dump(activity_obj, json_file, indent=1)
+        json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
-        pretty_fmt = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy)
-        print (pretty_fmt.format("Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen"))
-        for x in range(0,list_length):
-            fixed_value = fixed[x]
-            rigid_value = rigid[x]
-            start_time_value = start_time[x]
-            name_value = name[x]
-            length_value = length[x]
-            ActLen_value = ActLen[x]
-            print(pretty_fmt.format(fixed_value, rigid_value, start_time_value, name_value, length_value, ActLen_value))
+        pretty_fmt = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
+        print (pretty_fmt.format("Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
+        for x in range(0,list_length): # Loops over data.txt to print each of the values
+            print(pretty_fmt.format(fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
 
-while True:
+while True: # A simple loop to make the program continuous
     repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n4. Set a new start time\n")
     if repeat == "1":
         adding()
@@ -96,6 +95,6 @@ while True:
     elif repeat == "3":
         view_and_update()
     elif repeat == "4":
-        start_time_input = input("Enter the start time in the format HH:MM: ")
+        start_time_input = input("Enter the start time in the format HH:MM: ") # TODO Currently, this is not being used by the program for some reason. I need to fix this issue
     else:
         break
