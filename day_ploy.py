@@ -11,10 +11,12 @@ from datetime import timedelta
 import json
 import os
 import sys
+import winsound
 
 data_file = os.path.join(sys.path[0],'data.txt')
 
-daily_mins = 16*60
+daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration
+start_time_input = "00:00" # TODO Let the user pick their own start time through the program. But, for now, modify this value in order to set the start time of your day (HH:MM)!
 
 with open(data_file, 'r') as json_file:
     activity_obj = json.load(json_file)
@@ -35,7 +37,7 @@ def adding():
                 length_input = int(input("Enter the number of goal number of desired minutes: "))
             fixed.append("-")
             rigid.append("-")
-            start_time.append("00:00") # TODO Let the user pick their own start time through the program. But, for now, modify this value in order to set the start time of your day (HH:MM)!
+            start_time.append(start_time_input)
             name.append(task_name_input)
             length.append(length_input)
             ActLen.append(0)
@@ -80,8 +82,8 @@ def view_and_update():
             ActLen_value = ActLen[x]
             print(pretty_fmt.format(fixed_value, rigid_value, start_time_value, name_value, length_value, ActLen_value))
 
-while 0 < 1:
-    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
+while True:
+    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n4. Set a new start time\n")
     if repeat == "1":
         adding()
         view_and_update()
@@ -90,8 +92,10 @@ while 0 < 1:
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
         for l in list_of_stats:
             del l[task_number]
-            start_time[0] = "00:00"
+            start_time[0] = "00:00" # TODO fix issue of not being able to delete a task if there is only 1 task in data.txt
     elif repeat == "3":
         view_and_update()
+    elif repeat == "4":
+        start_time_input = input("Enter the start time in the format HH:MM: ")
     else:
         break
