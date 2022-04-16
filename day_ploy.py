@@ -115,11 +115,13 @@ while True: # A simple loop to make the program continuous
             tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],}
             with open(data_file, 'w') as json_file:
                 json.dump(tasks_dict, json_file, indent=1)
+
         else:
             for l in list_of_stats:
                 del l[task_number]
 
     elif repeat == "3":
         view_and_update()
+
     else:
         break
