@@ -100,6 +100,7 @@ def view_and_update(): # This function refreshes the columns
             print(pretty_fmt.format(fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
         print("===================================================================\n")
 
+
 while True: # A simple loop to make the program continuous
     repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
 
