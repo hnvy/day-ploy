@@ -53,7 +53,7 @@ def view_and_update(): # This function refreshes the columns
     global fixed, rigid, start_time, name, length, ActLen, start_time_input # This globalises the variables so that they can be used in this function.
 
     with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
-        start_time_q = input("Do you want to enter a new start time?\n1. Yes\n2. No, set the start time to default (09:00)\n3. Do nothing!\n")
+        start_time_q = input("Do you want to enter a new start time?\n1. Yes\n2. No, set the start time to default (09:00)\n3. Do nothing (you MUST put a start time if this is your first time running the program)\n") # This asks the user whether or not they want to put a new start time
         if start_time_q == "1":
             start_time_input = input("Enter the start time in the format HH:MM: ")
         elif start_time_q == "2":
