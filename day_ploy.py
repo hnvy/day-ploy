@@ -94,10 +94,10 @@ def view_and_update(): # This function refreshes the columns
         json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
         print("===================================================================")
-        pretty_fmt = "{:<5} {:<5} {:<15} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
-        print (pretty_fmt.format("Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
+        pretty_fmt = "{:<5} {:<5} {:<5} {:<15} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
+        print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
         for x in range(0,list_length): # Loops over data.txt to print each of the values
-            print(pretty_fmt.format(fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
+            print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
         print("===================================================================\n")
 
 
