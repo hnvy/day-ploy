@@ -31,6 +31,7 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
 # TODO list
 - [X] Need to make the program figure out the start time based on ActLen
 - [X] Need to make the program add the start time to the CSV
+- [X] Let the user enter their own start time
 - [ ] Rigid feature
 - [ ] Fixed feature (I need to first figure out the maths behind it)
 - [X] There is an issue where ActLen is not being written into the CSV file
