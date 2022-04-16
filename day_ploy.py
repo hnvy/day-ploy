@@ -37,27 +37,30 @@ def adding(): # This function is for adding a new activity to the program
     with open(data_file, 'w') as json_file: # Opens up data.txt as json_file in write mode
         while True: # This is a loop which keeps asking the user to enter the activity name and desired number of minutes
             task_name_input = input("Enter the task name (type . to exit): ") # Asks the user to enter the activity name
+
             if task_name_input == ".": # If the user enters ".", the program will exit this loop
                 break
             else:
                 length_input = int(input("Enter the number of goal number of desired minutes: ")) # This variable holds the desired number of minutes which the user will supply
+
             fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
             rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
-            start_time.append("00:00") # This writes the start time which is supplied by the user in the start_time field in data.txt
+            start_time.append("09:42") # This writes the start time which is supplied by the user in the start_time field in data.txt
             name.append(task_name_input) # Same thing as above but for a new variable
             length.append(length_input) # Same thing as above but for a new variable
             ActLen.append(0) # Same thing as above but for a new variable
             json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
+
 def view_and_update(): # This function refreshes the columns
     global fixed, rigid, start_time, name, length, ActLen, start_time_input # This globalises the variables so that they can be used in this function.
 
     with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
-        start_time_q = input("Do you want to enter a new start time?\n1. Yes\n2. No, set the start time to default (09:00)\n3. Do nothing (you MUST put a start time if this is your first time running the program)\n") # This asks the user whether or not they want to put a new start time
+        start_time_q = input("Do you want to enter a new start time?\n1. Yes\n2. No, set the start time to default (09:42)\n3. Do nothing (you MUST put a start time if this is your first time running the program)\n") # This asks the user whether or not they want to put a new start time
         if start_time_q == "1":
             start_time_input = input("Enter the start time in the format HH:MM: ")
         elif start_time_q == "2":
-            start_time_input = "09:00"
+            start_time_input = "09:42"
         else:
             pass
 
@@ -99,15 +102,15 @@ def view_and_update(): # This function refreshes the columns
 
 while True: # A simple loop to make the program continuous
     repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
-    
+
     if repeat == "1":
         adding()
         view_and_update()
-        
+
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
-        
+
         if len(name) == 1:
             tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],}
             with open(data_file, 'w') as json_file:
