@@ -68,7 +68,7 @@ def view_and_update(): # This function refreshes the columns
         for p in range(0,list_length): # This is the loop which will go around the list of activities
             length_column_total += length[p] # This will add the length supplied by the user to the length_column_total
 
-        start_time[0] = start_time_input
+        start_time[0] = start_time_input # This sets the start time of the first activity to whatever the user has chosen
 
         if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
             length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
