@@ -20,7 +20,11 @@ Very simple:
 # Contributing
 The program is still a massive work-in-progress. If you would like to contribute, then please do so!
 
-Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work. Then simply transform those concepts into Python letters and numbers to bring it to life!
+You can fork this project and build something pretty :).
+
+Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work. Then simply transform those concepts into Python letters and numbers to bring it to life.
+
+Feel free to contact me if you get stuck, I will be more than happy to help!
 
 # TODO list
 - [X] Need to make the program figure out the start time based on ActLen
