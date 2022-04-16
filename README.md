@@ -39,7 +39,7 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
   - [X] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
 - [ ] Might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
 - [ ] Ability to move activities up and down
-- [ ] Print the index of each activity to make it easier for the user to delete something
+- [X] Print the index of each activity to make it easier for the user to delete something
 - [ ] Create a timer. Perhaps use something like:
   ```
   import winsound
