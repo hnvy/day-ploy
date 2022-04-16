@@ -10,7 +10,7 @@ day-ploy is a Python program that allows you to manipulate the flow of time. It 
 
 This program is based on the concept behind [SuperMemo Plan](https://help.supermemo.org/wiki/Plan), which is a game-changing piece of software that will... well, change your life for the better.
 
-This Python program is not intended to be a complete replacement for SuperMemo Plan, but rather as a starting point for further development and expansion. I'm hoping this serves as a skeleton for something more considerable.
+This Python program is not intended to be a complete replacement for SuperMemo Plan, but rather as a starting point for further development and expansion. I'm hoping for this to serve as a skeleton for something more considerable.
 
 # How do you use it?
 Very simple:
