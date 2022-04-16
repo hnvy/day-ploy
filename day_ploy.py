@@ -99,12 +99,15 @@ def view_and_update(): # This function refreshes the columns
 
 while True: # A simple loop to make the program continuous
     repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
+    
     if repeat == "1":
         adding()
         view_and_update()
+        
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
+        
         if len(name) == 1:
             tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],}
             with open(data_file, 'w') as json_file:
