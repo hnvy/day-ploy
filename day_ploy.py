@@ -45,7 +45,7 @@ def adding(): # This function is for adding a new activity to the program
 
             fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
             rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
-            start_time.append("09:42") # This writes the start time which is supplied by the user in the start_time field in data.txt
+            start_time.append("09:42") # This writes the default start time (09:42)
             name.append(task_name_input) # Same thing as above but for a new variable
             length.append(length_input) # Same thing as above but for a new variable
             ActLen.append(0) # Same thing as above but for a new variable
