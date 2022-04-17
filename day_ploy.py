@@ -115,7 +115,7 @@ while True: # A simple loop to make the program continuous
         if len(name) == 1:
             tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
             with open(data_file, 'w') as json_file:
-                json.dump(tasks_dict, json_file, indent=1)
+                json.dump(tasks_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
         else:
             for l in list_of_stats:
