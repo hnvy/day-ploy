@@ -118,6 +118,7 @@ def view_and_update(): # This function refreshes the columns
 
 
 # * Run, run, run, RUN!
+
 while True: # A simple loop to make the program continuous
     repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. View current activity list\n")
 
