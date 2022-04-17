@@ -11,8 +11,6 @@
 ## - Enter the desired number of minutes which you would like to spend on each of these activities
 ## - Let the program give you a more realistic number of minutes for each of your activities
 
-
-
 # * Start
 
 import datetime
@@ -21,7 +19,17 @@ from datetime import timedelta
 import json
 import os
 import sys
-# import winsound # This is a good library to use in order to create a lightweight alarm clock
+'''
+import winsound # This is a good library to use in order to create a lightweight alarm clock. Perhaps use something like this:
+start_time = "13:00"
+start_time_stripped = datetime.strptime(start_time, "%H:%M")
+start_time_formatted = datetime.strftime(start_time_stripped, "%H:%M")
+while True: # This consumes a lot of CPU, and is therefore not resource-friendly
+  if start_time_formatted == datetime.strftime(datetime.now(), "%H:%M"):
+  winsound.Beep(1000,1000)
+  print("timer!")
+  break
+'''
 
 # * Initialise
 
