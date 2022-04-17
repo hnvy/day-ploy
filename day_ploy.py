@@ -118,15 +118,15 @@ def view_and_update(): # This function refreshes the columns
 
 # * Run, run, run, RUN!
 while True: # A simple loop to make the program continuous
-    repeat = input("What do you want to do?\n1. Add tasks\n2. Delete tasks\n3. View current list\n")
+    repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. View current activity list\n")
 
     if repeat == "1":
         adding()
         view_and_update()
 
     elif repeat == "2":
-        list_of_stats = [fixed,rigid,start_time,name,length,ActLen]
-        task_number = int(input("Enter the INDEX of the task which you want to delete: "))
+        list_of_stats = [fixed,rigid,start_time,name,length,ActLen] # Essentially, this list-ifies the data.txt content, and therefore we are able to loop around the file
+        task_number = int(input("Enter the INDEX of the activity which you want to delete: "))
 
         if len(name) == 1:
             tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
