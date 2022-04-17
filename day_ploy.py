@@ -2,7 +2,7 @@
 # To learn more about SuperMemo Plan, please visit: https://help.supermemo.org/wiki/Plan
 # The program is still a massive work-in-progress. If you would like to contribute, then please do so!
 # You can fork this project and build something pretty :).
-# Not sure what you should be aiming for? Read [[this guide][https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO]] to
+# Not sure what you should be aiming for? Read [[https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO][this guide]] to
 # find out about how the original SuperMemo Plan is supposed to work. Then simply transform
 # those concepts into Python letters and numbers to bring it to life.
 # Feel free to contact me if you get stuck, I will be more than happy to help!
