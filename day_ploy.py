@@ -1,9 +1,17 @@
 # This is an open-source SuperMemo Plan alternative
 # To learn more about SuperMemo Plan, please visit: https://help.supermemo.org/wiki/Plan
+# The program is still a massive work-in-progress. If you would like to contribute, then please do so!
+# You can fork this project and build something pretty :).
+# Not sure what you should be aiming for? Read [[this guide][https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO]] to
+# find out about how the original SuperMemo Plan is supposed to work. Then simply transform
+# those concepts into Python letters and numbers to bring it to life.
+# Feel free to contact me if you get stuck, I will be more than happy to help!
 # The program is pretty easy to use:
-## Enter the list of the activities which you want to do today
-## Enter the desired number of minutes which you would like to spend on each of these activities
-## Let the program give you a more realistic number of minutes for each of your activities
+## - Enter the list of the activities which you want to do today
+## - Enter the desired number of minutes which you would like to spend on each of these activities
+## - Let the program give you a more realistic number of minutes for each of your activities
+
+
 
 # * Start
 
