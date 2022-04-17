@@ -20,7 +20,6 @@ import sys
 data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable to the location of data.txt (to speed up the process of pointing to the file)
 
 daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration
-#start_time_input = "00:00" # TODO Let the user pick their own start time through the program. But, for now, modify this value in order to set the start time of your day (HH:MM)!
 
 with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
     activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
@@ -118,7 +117,7 @@ while True: # A simple loop to make the program continuous
                 json.dump(tasks_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
         else:
-            for l in list_of_stats:
+            for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
                 del l[task_number]
 
     elif repeat == "3":
