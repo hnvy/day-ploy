@@ -113,7 +113,7 @@ while True: # A simple loop to make the program continuous
         task_number = int(input("Enter the INDEX of the task which you want to delete: "))
 
         if len(name) == 1:
-            tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],}
+            tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []}
             with open(data_file, 'w') as json_file:
                 json.dump(tasks_dict, json_file, indent=1)
 
