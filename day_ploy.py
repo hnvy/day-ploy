@@ -51,9 +51,9 @@ with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read
 def adding(): # This function is for adding a new activity to the program
     with open(data_file, 'w') as json_file: # Opens up data.txt as json_file in write mode
         while True: # This is a loop which keeps asking the user to enter the activity name and desired number of minutes
-            task_name_input = input("Enter the task name (type . to exit): ") # Asks the user to enter the activity name
+            activity_name_input = input("Enter the activity name (type . to exit): ") # Asks the user to enter the activity name
 
-            if task_name_input == ".": # If the user enters ".", the program will exit this loop
+            if activity_name_input == ".": # If the user enters ".", the program will exit this loop
                 break
             else:
                 length_input = int(input("Enter the number of goal number of desired minutes: ")) # This variable holds the desired number of minutes which the user will supply
@@ -61,7 +61,7 @@ def adding(): # This function is for adding a new activity to the program
             fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
             rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
             start_time.append("09:42") # This writes the default start time (09:42)
-            name.append(task_name_input) # Same thing as above but for a new variable
+            name.append(activity_name_input) # Same thing as above but for a new variable
             length.append(length_input) # Same thing as above but for a new variable
             ActLen.append(0) # Same thing as above but for a new variable
             json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
@@ -126,16 +126,16 @@ while True: # A simple loop to make the program continuous
 
     elif repeat == "2":
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen] # Essentially, this list-ifies the data.txt content, and therefore we are able to loop around the file
-        task_number = int(input("Enter the INDEX of the activity which you want to delete: "))
+        activity_number = int(input("Enter the INDEX of the activity which you want to delete: "))
 
         if len(name) == 1:
-            tasks_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
+            activitys_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
             with open(data_file, 'w') as json_file:
-                json.dump(tasks_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+                json.dump(activitys_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
         else:
             for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
-                del l[task_number]
+                del l[activity_number]
 
     elif repeat == "3":
         view_and_update()
