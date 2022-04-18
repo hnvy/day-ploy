@@ -38,7 +38,7 @@ while True: # This consumes a lot of CPU, and is therefore not resource-friendly
 
 data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable to the location of data.txt (to speed up the process of pointing to the file)
 
-daily_mins = 9*60 # TODO Let the user pick an time sleep in order to calculate the day duration
+daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration
 
 with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
     activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
