@@ -38,7 +38,7 @@ while True: # This consumes a lot of CPU, and is therefore not resource-friendly
 
 data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable to the location of data.txt (to speed up the process of pointing to the file)
 
-daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration
+daily_mins = 9*60 # TODO Let the user pick an time sleep in order to calculate the day duration
 
 with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
     activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
@@ -82,41 +82,42 @@ def view_and_update(): # This function refreshes the columns
         else:
             pass
 
-        list_length = len(name) # This calculates the number of activities in our JSON file (data.txt)
+        length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
 
-        length_column_total = 0 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
-
-        for p in range(0,list_length): # This is the loop which will go around the list of activities
-            length_column_total += length[p] # This will add the length supplied by the user to the length_column_total
+        list_length = len(name) # This calculates the number of activities in our JSON file based on how many names are present in data.txt
+        for i in range(0,list_length): # This is the loop which will go around the list of activities
+            length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
 
         start_time[0] = start_time_input # TODO This sets the start time of the first activity to whatever the user has chosen. I need to understand WHY this works (I must admit that I accidently got it to work...)
 
         if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
             length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
 
-        ratio_multiplier = int(daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+        else:
+            length_column_total -= 1
+            
+            ratio_multiplier = float(daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+            
+            for i in range(0,list_length): # This is the loop which will go around the list of activities
+                start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
+                ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
 
-        for i in range(0,list_length): # This is the loop which will go around the list of activities
+                new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
+                new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
 
-            start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
-            ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
-
-            new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
-            new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
-
-            if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
-                break # Stops the program
-            else:
-                start_time[i+1] = new_start_time_format # Writes the start time of each activity
+                if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
+                    break # Stops the program
+                else:
+                    start_time[i+1] = new_start_time_format # Writes the start time of each activity
 
         json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
-        print("===================================================================")
-        pretty_fmt = "{:<5} {:<5} {:<5} {:<15} {:<10} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
+        print("===================================================================================")
+        pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
         print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
         for x in range(0,list_length): # Loops over data.txt to print each of the values
             print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
-        print("===================================================================\n")
+        print("===================================================================================\n")
 
 
 # * Run, run, run, RUN!
@@ -132,10 +133,11 @@ while True: # A simple loop to make the program continuous
         list_of_stats = [fixed,rigid,start_time,name,length,ActLen] # Essentially, this list-ifies the data.txt content, and therefore we are able to loop around the file
         activity_number = int(input("Enter the INDEX of the activity which you want to delete: "))
 
-        if len(name) == 1:
-            activitys_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": []} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
+        if len(name) <= 1 and activity_number == 0: # TODO I still need to get this to work!
+            print(len(name))
+            activities_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
             with open(data_file, 'w') as json_file:
-                json.dump(activitys_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+                json.dump(activities_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
         else:
             for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
