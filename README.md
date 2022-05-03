@@ -29,26 +29,18 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 Feel free to contact me if you get stuck, I will be more than happy to help!
 
 # TODO list
+## To be done
+- [ ] Create timer
+- [ ] Create GUI (perhaps use [Gooey](https://github.com/chriskiehl/Gooey) as it is quick and easy)
+- [ ] Add Rigid feature
+- [ ] Add Fixed feature (I need to first figure out the maths behind it)
+- [ ] Add ability to make the name of the text file change according to the (chosen) date. But this can be done later: "data.txt" should do for now.
+- [ ] Add ability to move activities up and down
+## Done
 - [X] Need to make the program figure out the start time based on ActLen
 - [X] Need to make the program add the start time to the CSV
 - [X] Let the user enter their own start time
-- [ ] Rigid feature
-- [ ] Fixed feature (I need to first figure out the maths behind it)
 - [X] There is an issue where ActLen is not being written into the CSV file
 - [X] Think about whether we should use Pandas or JSON. The reason being is that, currently, Pandas uses about 30 Mb of RAM, whereas JSON uses 2 Mb.
   - [X] Furthermore, Pandas is a somewhat esoteric library, and few people will be comfortable using it. Therefore, this could limit the number of contributors.
-- [ ] Might need to make the name of the CSV file change according to the date. But this can be done later: "data.csv" should do for now.
-- [ ] Ability to move activities up and down
 - [X] Print the index of each activity to make it easier for the user to delete something
-- [ ] Create a timer. Perhaps use something like:
-  ```
-  import winsound
-  start_time = "13:00"
-  start_time_stripped = datetime.strptime(start_time, "%H:%M")
-  start_time_formatted = datetime.strftime(start_time_stripped, "%H:%M")
-  while True: # This consumes a lot of CPU, and is therefore not resource-friendly
-    if start_time_formatted == datetime.strftime(datetime.now(), "%H:%M"):
-    winsound.Beep(1000,1000)
-    print("timer!")
-    break
-  ```
