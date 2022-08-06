@@ -33,12 +33,12 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
 - [ ] Create timer
 - [ ] Create GUI (perhaps use [Gooey](https://github.com/chriskiehl/Gooey) as it is quick and easy)
   - [ ] Or perhaps create a TUI using something like [asciimatics](https://github.com/peterbrittain/asciimatics) (I like this one a lot)
-- [ ] Add Rigid feature
 - [ ] Add Fixed feature (I need to first figure out the maths behind it)
 - [ ] Add ability to make the name of the text file change according to the (chosen) date. But this can be done later: "data.txt" should do for now.
 - [ ] Add ability to move activities up and down
 - [ ] File validation
 ## Done
+- [X] Add Rigid feature
 - [X] Need to make the program figure out the start time based on ActLen
 - [X] Need to make the program add the start time to the CSV
 - [X] Let the user enter their own start time
