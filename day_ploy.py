@@ -207,7 +207,7 @@ while True: # A simple loop to make the program continuous
 	if list_length == 0:
 		resetter()
 
-	repeat = input(f"What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. View current activity list\n")
+	repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. View current activity list\n")
 
 	if repeat == "1":
 		adding()
