@@ -29,8 +29,10 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 Feel free to contact me if you get stuck, I will be more than happy to help!
 
 # Changelog
+- 09/08/2022
+  - File validation added.
 - 06/08/2022
-  - Added the Rigid feature!
+  - Added the Rigid feature.
 
 # TODO list
 ## To be done
@@ -40,8 +42,9 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
 - [ ] Add Fixed feature (I need to first figure out the maths behind it)
 - [ ] Add ability to make the name of the text file change according to the (chosen) date. But this can be done later: "data.txt" should do for now.
 - [ ] Add ability to move activities up and down
-- [ ] File validation
+
 ## Done
+- [X] File validation
 - [X] Add Rigid feature
 - [X] Need to make the program figure out the start time based on ActLen
 - [X] Need to make the program add the start time to the CSV
