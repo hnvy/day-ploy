@@ -42,33 +42,33 @@ data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable 
 daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration.
 				   # TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
 
-start_time_input = "" # This will come in handy later, trust me.
+def validator():
+	global activity_obj, fixed, rigid, start_time, name, length, ActLen
+	with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
+		activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
+		fixed = activity_obj["fixed"]
+		rigid = activity_obj["rigid"]
+		start_time = activity_obj["start_time"]
+		name = activity_obj["name"]
+		length = activity_obj["length"]
+		ActLen = activity_obj["ActLen"]
 
-# new_start_time = 0
 
-def resetter(): # TODO fix validation
-	data_file = os.path.join(sys.path[0],'data.txt')
-
+def resetter():
 	tasks_dict = {
 	"fixed": [],
 	"rigid": [],
 	"start_time": [],
 	"name": [],
 	"length": [],
-	"ActLen": [],
-	}
+	"ActLen": []}
 
 	with open(data_file, 'w') as json_file:
 		json.dump(tasks_dict, json_file, indent=1)
 
-with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
-	activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
-	fixed = activity_obj["fixed"]
-	rigid = activity_obj["rigid"]
-	start_time = activity_obj["start_time"]
-	name = activity_obj["name"]
-	length = activity_obj["length"]
-	ActLen = activity_obj["ActLen"]
+	validator()
+
+	return
 
 # * Main
 
@@ -92,79 +92,75 @@ def adding(): # This function is for adding a new activity to the program
 
 
 def view_and_update(): # This function refreshes the columns
-	global fixed, rigid, start_time, name, length, ActLen, start_time_input, rigid_surpless # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
+	global fixed, rigid, start_time, name, length, ActLen, rigid_surpless, current_daily_mins # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
 
-	with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
-		if start_time_input == "":
-			print("I noticed that there is no start time set")
-			start_time_q = input("Do you want to enter a new start time?\n1. Yes\n2. No, set the start time to default (09:42)\n") # This asks the user whether or not they want to put a new start time
-			if start_time_q == "1":
-				start_time_input = input("Enter the start time in the format HH:MM: ")
+	try:
+		current_daily_mins = 0 # TODO figure out a way to make the chosen number of work hours persistent.
+
+		with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
+			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
+			rigid_surpless = 0 # rigid_surpless is a new variable. Its whole purpose will become clear later...
+
+			for i in range(0,list_length): # This is the loop which will go around the list of activities
+				length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
+
+			if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
+				length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
 			else:
-				start_time_input = "09:42"
-		else: # Basically tells the program that if there is already a start time, then just skip the above.
-			pass
+				length_column_total -= 1 # Subtracts the safety number "1"
+			
+			ratio_multiplier = float(daily_mins/length_column_total) # TODO figure out a way to make the chosen number of work hours persistent. The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
 
-		start_time[0] = start_time_input # This sets the start time of the first activity to the start_time_input
+			for i in range(0,list_length):
+				ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
+				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
 
-		length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
+			for i in range(0,list_length):
+				# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
+				if rigid[i] == "R":
+					rigid_surpless += abs(ActLen[i] - length[i]) # This rigid_surpless again. Basically, it will calculate the excess minutes that are left over from the subtraction of ActLen and length (it will also be an absolute value, since we don't want any negative numbers)
 
-		rigid_surpless = 0 # rigid_surpless is a new variable. Its whole purpose will become clear later...
+			rigid_multiplier = float(rigid_surpless/length_column_total) # rigid_multiplier is the new multiplier (compare that to ratio_multiplier)
 
-		list_length = len(name) # This calculates the number of activities in our JSON file based on how many names are present in data.txt
+			for i in range(0,list_length): # Loops around, again...
+				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
 
-		for i in range(0,list_length): # This is the loop which will go around the list of activities
-			length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
+				ActLen[i] += int(rigid_multiplier * length[i]) # This time, we're using rigid_multiplier instead of ratio_multiplier
 
-		if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
-			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
-		else:
-			length_column_total -= 1 # Subtracts the safety number "1"
+				if rigid[i] == "R": # This checks if the activity status is rigid. If so, then it will set ActLen to length (because that is the whole purpose of "Rigid")
+					ActLen[i] = length[i]
 
-		ratio_multiplier = float(daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+				new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
+				new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
 
-		for i in range(0,list_length):
+				current_daily_mins += float(ActLen[i])
 
-			ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
-
-			start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
-
-		for i in range(0,list_length):
-			# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
-			if rigid[i] == "R":
-				rigid_surpless += abs(ActLen[i] - length[i]) # This rigid_surpless again. Basically, it will calculate the excess minutes that are left over from the subtraction of ActLen and length (it will also be an absolute value, since we don't want any negative numbers)
-
-		rigid_multiplier = float(rigid_surpless/length_column_total) # rigid_multiplier is the new multiplier (compare that to ratio_multiplier)
-
-		for i in range(0,list_length): # Loops around, again...
-			start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
-
-			ActLen[i] += int(rigid_multiplier * length[i]) # This time, we're using rigid_multiplier instead of ratio_multiplier
-
-			if rigid[i] == "R": # This checks if the activity status is rigid. If so, then it will set ActLen to length (because that is the whole purpose of "Rigid")
-				ActLen[i] = length[i]
-
-			new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
-			new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
-
-			if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
-				break # Stops the program
-			else:
-				start_time[i+1] = new_start_time_format # Writes the start time of each activity
-
-		json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
-
-		print("===================================================================================")
-		pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
-		print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
-		for x in range(0,list_length): # Loops over data.txt to print each of the values
-			print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
-		print("===================================================================================\n")
+				if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
+					break # Stops the program
+				else:
+					start_time[i+1] = new_start_time_format # Writes the start time of each activity
 
 
-def modify(): # TODO finish this off
+			json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+
+			print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {round(current_daily_mins/60, 2)}\n- Number of activities: {list_length}\n")
+
+			print("===================================================================================")
+			pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
+			print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
+			for x in range(0,list_length): # Loops over data.txt to print each of the values
+				print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
+			print("===================================================================================\n")
+
+	except:
+		if list_length == 0:
+			print("Sorry, you have zero activities. Please add some so that you can view the current activity list.\n")
+			return
+
+
+def modify():
 # TODO make it so that the length and the ActLen change according to the rigid and fixed status
-	global fixed, rigid, start_time, name, length, ActLen, start_time_input
+	global fixed, rigid, start_time, name, length, ActLen
 
 	with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
 		list_length = len(name)
@@ -180,12 +176,11 @@ def modify(): # TODO finish this off
 				elif current_fixed_status == "F":
 					current_fixed_status = "-"
 				fixed[activity_number] = current_fixed_status # Writes the fixed value
-				# TODO finish this off. I need to figure out the maths behind the Fixed feature. Or maybe we should make this app different to the original (in the sense that it will not have a fixed feature. We'll see)
+				# TODO I need to figure out the maths behind the Fixed feature. Or maybe we should make this app different to the original (in the sense that it will not have a fixed feature. We'll see)
 			else:
 				pass
 
 		elif editor == "2":
-			print(f"You want to modify the rigidity of '{name[activity_number]}'\n")
 			current_rigid_status = rigid[activity_number]
 			rigid_mod = input(f"Currently, the rigidity status of '{name[activity_number]}' is: {current_rigid_status}, do you want to modify it?\n1. Yes\n2. No\n")
 			if rigid_mod == "1":
@@ -195,36 +190,52 @@ def modify(): # TODO finish this off
 					current_rigid_status = "-"
 				rigid[activity_number] = current_rigid_status
 
-			json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+		json.dump(activity_obj, json_file, indent=1)
 
 # * Run, run, run, RUN!
 
-while True: # A simple loop to make the program continuous
-	 # TODO I still can't get the validation to work :(
+try:
+	validator()
 
-	repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. View current activity list\n")
+except:
+	print("There was an issue with the file format, I have fixed it.\nNote: in the future, please avoid modifying the file form as this results in issues.")
+	resetter()
+
+
+while True: # A simple loop to make the program continuous
+	list_length = len(name) # This calculates the number of activities in our JSON file based on how many names are present in data.txt
+	if list_length == 0:
+		resetter()
+
+	repeat = input(f"What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. View current activity list\n")
 
 	if repeat == "1":
 		adding()
-		view_and_update()
 
 	elif repeat == "2":
 		list_of_stats = [fixed,rigid,start_time,name,length,ActLen] # Essentially, this list-ifies the data.txt content, and therefore we are able to loop around the file
 		activity_number = int(input("Enter the INDEX of the activity which you want to delete: "))
 
-		if len(name) <= 1 and activity_number == 0: # TODO I still need to get this to work!
-			print(len(name))
-			activities_dict = {"fixed": [],"rigid": [],"start_time": [],"name": [],"length": [],"ActLen": [],} # This resets the entire data.txt file if there is only one activity remaining which needs to be deleted
-			with open(data_file, 'w') as json_file:
-				json.dump(activities_dict, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+		if len(name) == 1 or len(name) == 0:
+			resetter()
 
 		else:
 			for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
 				del l[activity_number]
+
 	elif repeat == "3":
 		modify()
 
 	elif repeat == "4":
+		start_time_input = input("Enter the start time in the format HH:MM: ")
+		start_time[0] = start_time_input # This sets the start time of the first activity to the start_time_input
+
+	elif repeat == "5":
+		print(f"The current number of hours is {round(current_daily_mins/60, 2)}")
+		hours_input = float(input("Please write how many hours would you like to work for today (0 < x < 24): "))
+		daily_mins = hours_input * 60
+
+	elif repeat == "6" or repeat == "":
 		view_and_update()
 
 	else:
