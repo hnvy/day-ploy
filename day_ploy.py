@@ -80,7 +80,7 @@ def adding(): # This function is for adding a new activity to the program
 			if activity_name_input == ".": # If the user enters ".", the program will exit this loop
 				break
 			else:
-				length_input = int(input("Enter the number of goal number of desired minutes: ")) # This variable holds the desired number of minutes which the user will supply
+				length_input = int(input("Enter the goal number of minutes: ")) # This variable holds the desired number of minutes which the user will supply
 
 			fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
 			rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
@@ -101,7 +101,7 @@ def view_and_update(): # This function refreshes the columns
 			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
 			rigid_surpless = 0 # rigid_surpless is a new variable. Its whole purpose will become clear later...
 
-			for i in range(0,list_length): # This is the loop which will go around the list of activities
+			for i in range(list_length): # This is the loop which will go around the list of activities
 				length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
 
 			if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
@@ -111,18 +111,18 @@ def view_and_update(): # This function refreshes the columns
 			
 			ratio_multiplier = float(daily_mins/length_column_total) # TODO figure out a way to make the chosen number of work hours persistent. The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
 
-			for i in range(0,list_length):
+			for i in range(list_length):
 				ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
 				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
 
-			for i in range(0,list_length):
+			for i in range(list_length):
 				# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
 				if rigid[i] == "R":
 					rigid_surpless += abs(ActLen[i] - length[i]) # This rigid_surpless again. Basically, it will calculate the excess minutes that are left over from the subtraction of ActLen and length (it will also be an absolute value, since we don't want any negative numbers)
 
 			rigid_multiplier = float(rigid_surpless/length_column_total) # rigid_multiplier is the new multiplier (compare that to ratio_multiplier)
 
-			for i in range(0,list_length): # Loops around, again...
+			for i in range(list_length): # Loops around, again...
 				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
 
 				ActLen[i] += int(rigid_multiplier * length[i]) # This time, we're using rigid_multiplier instead of ratio_multiplier
@@ -148,7 +148,7 @@ def view_and_update(): # This function refreshes the columns
 			print("===================================================================================")
 			pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
 			print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
-			for x in range(0,list_length): # Loops over data.txt to print each of the values
+			for x in range(list_length): # Loops over data.txt to print each of the values
 				print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
 			print("===================================================================================\n")
 
