@@ -16,8 +16,7 @@ The program is pretty easy to use:
 # * Start
 
 import datetime
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import json
 import os
 import sys
