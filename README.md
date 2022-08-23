@@ -29,6 +29,8 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 Feel free to contact me if you get stuck, I will be more than happy to help!
 
 # Changelog
+- 23/08/2022
+  - The program now adds the number of daily work hours to `time.txt`. This means that the program will now remember the number of work hours.
 - 09/08/2022
   - File validation added.
 - 06/08/2022
@@ -44,6 +46,7 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
 - [ ] Add ability to move activities up and down
 
 ## Done
+- [X] Make the program remember the number of daily working hours. This is added to `time.txt`
 - [X] File validation
 - [X] Add Rigid feature
 - [X] Need to make the program figure out the start time based on ActLen
