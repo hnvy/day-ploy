@@ -21,28 +21,16 @@ import json
 import os
 import sys
 
-'''
-import winsound # This is a good library to use in order to create a lightweight alarm clock. Perhaps use something like this:
-start_time = "13:00"
-start_time_stripped = datetime.strptime(start_time, "%H:%M")
-start_time_formatted = datetime.strftime(start_time_stripped, "%H:%M")
-while True: # This consumes a lot of CPU, and is therefore not resource-friendly
-  if start_time_formatted == datetime.strftime(datetime.now(), "%H:%M"):
-  winsound.Beep(1000,1000)
-  print("timer!")
-  break
-'''
 
 # * Initialise
 
 data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable to the location of data.txt (to speed up the process of pointing to the file)
 												 # TODO let the user choose the file name. You might want to use something like this? https://www.py4e.com/html3/07-files.
 
-daily_mins = 16*60 # TODO Let the user pick an time sleep in order to calculate the day duration.
-				   # TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
+time_file = os.path.join(sys.path[0],'time.txt') # This sets time_file variable to the location of time.txt (this file contains the current work hours which the user has chosen)
 
 def validator():
-	global activity_obj, fixed, rigid, start_time, name, length, ActLen
+	global activity_obj, fixed, rigid, start_time, name, length, ActLen, time_obj, daily_mins
 	with open(data_file, 'r') as json_file: # Opens up data.txt as json_file in read mode
 		activity_obj = json.load(json_file) # Loads the JSON file and assigns it to the variable activity_obj
 		fixed = activity_obj["fixed"]
@@ -52,6 +40,9 @@ def validator():
 		length = activity_obj["length"]
 		ActLen = activity_obj["ActLen"]
 
+	with open(time_file, 'r') as json_time_file:
+		time_obj = json.load(json_time_file)
+		daily_mins = time_obj["daily_mins"]
 
 def resetter():
 	tasks_dict = {
@@ -62,8 +53,15 @@ def resetter():
 	"length": [],
 	"ActLen": []}
 
+	time_dict = {
+	"daily_mins": [959.99]
+	}
+
 	with open(data_file, 'w') as json_file:
 		json.dump(tasks_dict, json_file, indent=1)
+
+	with open(time_file, 'w') as json_time_file:
+		json.dump(time_dict, json_time_file, indent=1)
 
 	validator()
 
@@ -78,23 +76,37 @@ def adding(): # This function is for adding a new activity to the program
 
 			if activity_name_input == ".": # If the user enters ".", the program will exit this loop
 				break
+
 			else:
 				length_input = int(input("Enter the goal number of minutes: ")) # This variable holds the desired number of minutes which the user will supply
 
-			fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
-			rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
-			start_time.append("09:42") # This writes the default start time (09:42)
-			name.append(activity_name_input) # Same thing as above but for a new variable
-			length.append(length_input) # Same thing as above but for a new variable
-			ActLen.append(0) # Same thing as above but for a new variable
+				fixed.append("-") # TODO This writes "-" in the fixed field in data.txt. I need to use this later when creating the fixed feature.
+				rigid.append("-") # TODO This writes "-" in the rigid field in data.txt. I need to use this later when creating the rigid feature.
+				start_time.append("09:42") # This writes the default start time (09:42)
+				name.append(activity_name_input) # Same thing as above but for a new variable
+				length.append(length_input) # Same thing as above but for a new variable
+				ActLen.append(0) # Same thing as above but for a new variable
+			
+
 			json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
+
+		# TODO make it so that the program prints out the time at which the day ends
+		# fixed.append("-")
+		# rigid.append("-")
+		# start_time.append("00:00")
+		# name.append("END")
+		# length.append(0)
+		# ActLen.append(0)
+		
+		json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
 
 def view_and_update(): # This function refreshes the columns
-	global fixed, rigid, start_time, name, length, ActLen, rigid_surpless, current_daily_mins # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
+	global fixed, rigid, start_time, name, length, ActLen, rigid_surpless, daily_mins # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
 
 	try:
-		current_daily_mins = 0 # TODO figure out a way to make the chosen number of work hours persistent.
+		with open(time_file, 'r') as json_time_file: # operns up time.txt as json_time_file
+			number_of_daily_mins = daily_mins[0] # Reads the current number of work hours
 
 		with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
 			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
@@ -107,12 +119,11 @@ def view_and_update(): # This function refreshes the columns
 				length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
 			else:
 				length_column_total -= 1 # Subtracts the safety number "1"
-			
-			ratio_multiplier = float(daily_mins/length_column_total) # TODO figure out a way to make the chosen number of work hours persistent. The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+
+			ratio_multiplier = float(number_of_daily_mins/length_column_total) # TODO figure out a way to make the chosen number of work hours persistent. The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
 
 			for i in range(list_length):
 				ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
-				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
 
 			for i in range(list_length):
 				# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily_mins
@@ -132,8 +143,6 @@ def view_and_update(): # This function refreshes the columns
 				new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
 				new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
 
-				current_daily_mins += float(ActLen[i])
-
 				if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
 					break # Stops the program
 				else:
@@ -142,7 +151,7 @@ def view_and_update(): # This function refreshes the columns
 
 			json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
-			print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {round(current_daily_mins/60, 2)}\n- Number of activities: {list_length}\n")
+			print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {number_of_daily_mins/60}\n- Number of activities: {list_length}\n")
 
 			print("===================================================================================")
 			pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
@@ -155,7 +164,6 @@ def view_and_update(): # This function refreshes the columns
 		if list_length == 0:
 			print("Sorry, you have zero activities. Please add some so that you can view the current activity list.\n")
 			return
-
 
 def modify():
 # TODO make it so that the length and the ActLen change according to the rigid and fixed status
@@ -206,6 +214,7 @@ while True: # A simple loop to make the program continuous
 	if list_length == 0:
 		resetter()
 
+
 	repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. View current activity list\n")
 
 	if repeat == "1":
@@ -213,9 +222,9 @@ while True: # A simple loop to make the program continuous
 
 	elif repeat == "2":
 		list_of_stats = [fixed,rigid,start_time,name,length,ActLen] # Essentially, this list-ifies the data.txt content, and therefore we are able to loop around the file
-		activity_number = int(input("Enter the INDEX of the activity which you want to delete: "))
+		activity_number = int(input("Enter the INDEX of the activity which you want to delete (or type 000 to reset the data): "))
 
-		if len(name) == 1 or len(name) == 0:
+		if len(name) == 1 or not len(name) or activity_number == 000:
 			resetter()
 
 		else:
@@ -230,9 +239,10 @@ while True: # A simple loop to make the program continuous
 		start_time[0] = start_time_input # This sets the start time of the first activity to the start_time_input
 
 	elif repeat == "5":
-		print(f"The current number of hours is {round(current_daily_mins/60, 2)}")
-		hours_input = float(input("Please write how many hours would you like to work for today (0 < x < 24): "))
-		daily_mins = hours_input * 60
+		with open(time_file, 'w') as json_time_file:
+			hours_input = float(input("Please write how many hours would you like to work for today (0 < x < 24): "))
+			daily_mins[0] = round((hours_input*60), 2) # Rounds the result to 2 decimal places
+			json.dump(time_obj, json_time_file, indent=1) # Writes this info into the time.txt file
 
 	elif repeat == "6" or repeat == "":
 		view_and_update()
