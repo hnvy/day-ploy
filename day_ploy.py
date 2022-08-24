@@ -42,8 +42,7 @@ def end_appender():
 
 # Function that adds let's us decide whether or not we want to delete the last activity on the list (which must be "$$END$$")
 def the_end(deletion=True): # Normally, if we call this function, it will delete the preceding activity
-	global list_of_stats
-
+	
 	if not list_length: # If data.txt doesn't have anything in it, nothing will happen
 		return
 
@@ -185,12 +184,12 @@ def view_and_update(): # This function refreshes the columns
 
 			print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {number_of_daily_mins/60}\n- Number of activities: {int(list_length)-2}\n")
 
-			print("===================================================================================")
+			print("=" * 83) # Prints "=" 83 times!
 			pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
 			print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
 			for x in range(list_length): # Loops over data.txt to print each of the values
 				print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
-			print("===================================================================================\n")
+			print("=" * 83, "\n")
 
 	except:
 		if not list_length:
