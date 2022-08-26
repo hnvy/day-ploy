@@ -29,7 +29,6 @@ data_file = os.path.join(sys.path[0],'data.txt') # This sets data_file variable 
 
 time_file = os.path.join(sys.path[0],'time.txt') # This sets time_file variable to the location of time.txt (this file contains the current work hours which the user has chosen)
 
-
 # Function that helps us append "$$END$$" to the end of the activity list
 def end_appender():
 	fixed.append("-")
@@ -42,7 +41,7 @@ def end_appender():
 
 # Function that adds let's us decide whether or not we want to delete the last activity on the list (which must be "$$END$$")
 def the_end(deletion=True): # Normally, if we call this function, it will delete the preceding activity
-	
+
 	if not list_length: # If data.txt doesn't have anything in it, nothing will happen
 		return
 
@@ -56,7 +55,7 @@ def the_end(deletion=True): # Normally, if we call this function, it will delete
 	elif deletion == True: # If this condition is met, then deletion WILL take place (because we know for sure that the last activity on that list is "$$END$$")
 		for l in list_of_stats: # Loops around list_of_stats, and deletes the "$$END$$" activity
 			del l[-1] # "-1" denotes the last activity in the list
-		# Now we have to write out a new "END" activity at the end of the activity list
+		# Now we have to write out a new "$$END$$" activity at the end of the activity list
 		end_appender() # Calls the end_appender() function
 
 
@@ -131,75 +130,79 @@ def adding(): # This function is for adding a new activity to the program
 		json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
 
-def view_and_update(): # This function refreshes the columns
+# This function refreshes the columns. It takes an argument "clear_screen". When set to True, the screen will be cleared to make the whole thing look a little nicer. The default value of this argument is False
+def view_and_update(clear_screen=False):
+# clears the screen
 	global fixed, rigid, start_time, name, length, ActLen, rigid_surpless, daily_mins # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
 
-	try:
-		with open(time_file, 'r') as json_time_file: # operns up time.txt as json_time_file
-			number_of_daily_mins = daily_mins[0] # Reads the current number of work hours
+	if not list_length:
+		print("Sorry, you have zero activities. Please add some so that you can view the current activity list.\n")
+		return
 
-		with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
-			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
-			rigid_surpless = 0 # rigid_surpless is a new variable. Its whole purpose will become clear later...
+	elif clear_screen == True:
+		os.system('cls' if os.name == 'nt' else 'clear')
 
-			for i in range(list_length): # This is the loop which will go around the list of activities
-				length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
+	with open(time_file, 'r') as json_time_file: # operns up time.txt as json_time_file
+		number_of_daily_mins = daily_mins[0] # Reads the current number of work hours
 
-			if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
-				length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
+	with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
+		length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean)
+		rigid_surpless = 0 # rigid_surpless is a new variable. Its whole purpose will become clear later...
+
+		for i in range(list_length): # This is the loop which will go around the list of activities
+			length_column_total += length[i] # This will add the length supplied by the user to the length_column_total
+
+		if length_column_total <= 0: # Just in case the step above has resulted in a negative number or zero...  Maybe making length_column_total = 1 previously is not needed after all.
+			length_column_total = 1 # This sets the length_column_total to 1, because, otherwise, we will end up dividing by zero (see the definition of ratio_multiplier to understand what I mean).
+		else:
+			length_column_total -= 1 # Subtracts the safety number "1"
+
+		ratio_multiplier = float(number_of_daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+
+		for i in range(list_length):
+			ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
+
+		for i in range(list_length):
+			# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily number of work hours
+			if rigid[i] == "R":
+				rigid_surpless += abs(ActLen[i] - length[i]) # This rigid_surpless again. Basically, it will calculate the excess minutes that are left over from the subtraction of ActLen and length (it will also be an absolute value, since we don't want any negative numbers)
+
+		rigid_multiplier = float(rigid_surpless/length_column_total) # rigid_multiplier is the new multiplier (compare that to ratio_multiplier)
+
+		the_end()
+
+		for i in range(list_length): # Loops around, again...
+			start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
+
+			ActLen[i] += int(rigid_multiplier * length[i]) # This time, we're using rigid_multiplier instead of ratio_multiplier
+
+			if rigid[i] == "R": # This checks if the activity status is rigid. If so, then it will set ActLen to length (because that is the whole purpose of "Rigid")
+				ActLen[i] = length[i]
+
+			new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
+			new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
+
+			if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
+				break # Stops the program
 			else:
-				length_column_total -= 1 # Subtracts the safety number "1"
+				start_time[i+1] = new_start_time_format # Writes the start time of each activity
 
-			ratio_multiplier = float(number_of_daily_mins/length_column_total) # The ratio_multiplier is what we are going to use in order to work out the actual length (ActLen). ActLen is basically the desired length * ratio_multiplier.
+		json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
-			for i in range(list_length):
-				ActLen[i] = int(ratio_multiplier * length[i]) # This calculates the actual length for each of the activities
+		print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {number_of_daily_mins/60}\n")
 
-			for i in range(list_length):
-				# TODO implement a feature that prevents the user from setting length[i] that is higher than the number of daily number of work hours
-				if rigid[i] == "R":
-					rigid_surpless += abs(ActLen[i] - length[i]) # This rigid_surpless again. Basically, it will calculate the excess minutes that are left over from the subtraction of ActLen and length (it will also be an absolute value, since we don't want any negative numbers)
 
-			rigid_multiplier = float(rigid_surpless/length_column_total) # rigid_multiplier is the new multiplier (compare that to ratio_multiplier)
-
-			the_end()
-
-			for i in range(list_length): # Loops around, again...
-				start_time_format = datetime.strptime(start_time[i], "%H:%M") # This formats the start_time from a string to a proper time. It uses HH:MM format
-
-				ActLen[i] += int(rigid_multiplier * length[i]) # This time, we're using rigid_multiplier instead of ratio_multiplier
-
-				if rigid[i] == "R": # This checks if the activity status is rigid. If so, then it will set ActLen to length (because that is the whole purpose of "Rigid")
-					ActLen[i] = length[i]
-
-				new_start_time = start_time_format + timedelta(minutes=ActLen[i]) # This will calculate the start time of each of the activities. It basically takes the start_time and adds the corresponding ActLen to it
-				new_start_time_format = datetime.strftime(new_start_time, "%H:%M") # This formats the new_start_time into HH:MM
-
-				if i+1 >= list_length: # This prevents the program from giving an error. The error arises because the program will loop, and loop, and loop until eventually there are no more activities to go over.
-					break # Stops the program
-				else:
-					start_time[i+1] = new_start_time_format # Writes the start time of each activity
-
-			json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
-
-			print(f"Current data:\n- Start time: {start_time[0]}\n- Number of work hours: {number_of_daily_mins/60}\n- Number of activities: {int(list_length)-2}\n")
-
-			print("=" * 83) # Prints "=" 83 times!
-			pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
-			print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
-			for x in range(list_length): # Loops over data.txt to print each of the values
-				print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
-			print("=" * 83, "\n")
-
-	except:
-		if not list_length:
-			print("Sorry, you have zero activities. Please add some so that you can view the current activity list.\n")
-			return
-
+		# TODO Fix bug that does not show "$$END$$" unless view_and_update() is called twice (this only happens after adding a task to an empty data.txt)
+		print("=" * 83) # Prints "=" 83 times!
+		pretty_fmt = "{:<2} {:<5} {:<5} {:<10} {:<20} {:<10} {:<10}" # I've borrowed this idea from kpence (https://github.com/kpence/day-ploy). It basically creates a nice table for us to use
+		print (pretty_fmt.format("I", "Fixed", "Rigid", "Start time", "Activity", "Length", "ActLen")) # Prints the column titles
+		for x in range(list_length): # Loops over data.txt to print each of the values
+			print(pretty_fmt.format(f"{x}", fixed[x], rigid[x], start_time[x], name[x], length[x], ActLen[x]))
+		print("=" * 83, "\n")
 
 def modify():
 # TODO make it so that the length and the ActLen change according to the rigid and fixed status
-	global fixed, rigid, start_time, name, length, ActLen, list_length
+	#global fixed, rigid, start_time, name, length, ActLen, list_length # TODO I don't think that this is needed.
 
 	with open(data_file, 'w') as json_file: # Opens up data.txt as json_file
 		list_length = len(name)
@@ -233,6 +236,49 @@ def modify():
 
 		json.dump(activity_obj, json_file, indent=1)
 
+# A function that moves the position of a chosen task
+def move():
+
+	if not list_length:
+		return
+	else:
+		with open(data_file, 'w') as json_file:
+			chosen_task = int(input("Enter the INDEX of the activity which you want to move: "))
+			new_position = int(input("Enter the INDEX of the new position: "))
+
+			if (name[chosen_task] or name[new_position]) == "$$END$$": # This prevents the user from choosing an index that has $$END$$
+				print("Sorry, you are not allowed to choose a position at which $$END$$ is placed\n")
+				return
+
+			else:
+				# Backup the task that is currently occupying the position chosen by the user
+				# TODO find a neater approach to this
+				fixed_old = fixed[new_position]
+				rigid_old = rigid[new_position]
+				rigid_old = rigid[new_position]
+				rigid_old = rigid[new_position]
+				# Notice how we did not move the the start_time. This is because it may lead to an issue where if you move the start_time activity to become the first in the list (i.e., at the index of 0) the program will interpret this as the new start time of the DAY.
+				# Also, notice how we did not move ActLen. This is because ActLen is calculated whenever we execute view_and_update. So, there is really no point in moving it.
+				name_old = name[new_position]
+				length_old = length[new_position]
+
+				# Write the content of the chosen task to the new position
+				# TODO find a neater approach to this
+				fixed[new_position] = fixed[chosen_task]
+				rigid[new_position] = rigid[chosen_task]
+				name[new_position] = name[chosen_task]
+				length[new_position] = length[chosen_task]
+
+				# Do the reverse to the above. In other words, write the content of the task that is currently occupying the position chosen by the user (i.e., "new_position") to the position that is occupied by "chosen_task"
+				# TODO find a neater approach to this
+				fixed[chosen_task] = fixed_old
+				rigid[chosen_task] = rigid_old
+				name[chosen_task] = name_old
+				length[chosen_task] = length_old
+
+				json.dump(activity_obj, json_file, indent=1)
+
+
 # * Run, run, run, RUN!
 
 try:
@@ -244,39 +290,58 @@ except:
 
 
 while True: # A simple loop to make the program continuous
+
 	list_length = len(name) # This calculates the number of activities in our JSON file based on how many names are present in data.txt
+
 	if list_length == 0:
 		resetter()
 
-	repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. View current activity list\n")
+	repeat = input("What do you want to do?\n1. Add activity\n2. Delete activity\n3. Modify activity\n4. Change the start time\n5. Change the number of hours for today\n6. Move an activity\n7. View current activity list\n")
 
 	if repeat == "1":
+		view_and_update(True)
 		adding()
+		view_and_update(True)
 
 	elif repeat == "2":
+		view_and_update(True)
 
 		activity_number = int(input("Enter the INDEX of the activity which you want to delete (or type 000 to reset the data): "))
+
 		if (len(name) == 1) or (not len(name)) or (activity_number == 000):
 			resetter()
+
 		else:
 			for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
 				del l[activity_number]
 
+		view_and_update(True)
+
 	elif repeat == "3":
+		view_and_update(True)
 		modify()
+		view_and_update(True)
 
 	elif repeat == "4":
-		start_time_input = input("Enter the start time in the format HH:MM: ")
-		start_time[0] = start_time_input # This sets the start time of the first activity to the start_time_input
+		view_and_update(True)
+		try:
+			start_time_input = input(f"Current start time is {start_time[0]}\nEnter the start time in the format HH:MM: ")
+			start_time[0] = start_time_input # This sets the start time of the first activity to the start_time_input
+			view_and_update(True)
+		except:
+			print("Sorry, you have zero activities, and hence no start time.\n")
 
 	elif repeat == "5":
+		view_and_update(True)
 		with open(time_file, 'w') as json_time_file:
-			hours_input = float(input("Please write how many hours would you like to work for today (0 < x < 24): "))
+			hours_input = float(input(f"Current number of work hours is {(daily_mins[0])/60}\nPlease write how many hours would you like to work for today (0 < x < 24): "))
 			daily_mins[0] = round((hours_input*60), 2) # Rounds the result to 2 decimal places
 			json.dump(time_obj, json_time_file, indent=1) # Writes this info into the time.txt file
+		view_and_update(True)
 
-	elif repeat == "6" or repeat == "":
-		view_and_update()
+	elif repeat == "6":
+		view_and_update(True)
+		move()
 
 	else:
-		break
+		view_and_update(True)
