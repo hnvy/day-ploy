@@ -29,6 +29,9 @@ Not sure what you should be aiming for? Read [this guide](https://drive.google.c
 Feel free to contact me if you get stuck, I will be more than happy to help!
 
 # Changelog
+- 26/08/2022
+  - You can now move tasks up and down.
+  - The program now clears the screen to give you a better experience.
 - 24/08/2022
   - You can now find out the tiem at which the day ends (it is printed out as `$$END$$` at the end of the activity list)
 - 23/08/2022
@@ -43,11 +46,11 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
 - [ ] Create timer
 - [ ] Create GUI (perhaps use [Gooey](https://github.com/chriskiehl/Gooey) as it is quick and easy)
   - [ ] Or perhaps create a TUI using something like [asciimatics](https://github.com/peterbrittain/asciimatics) (I like this one a lot)
-- [ ] Add Fixed feature (I need to first figure out the maths behind it)
+- [ ] Add Fixed feature (I need to first figure out the maths behind it). Or maybe we should make this app different to the original (in the sense that it will not have a fixed feature. We'll see)
 - [ ] Add ability to make the name of the text file change according to the (chosen) date. But this can be done later: "data.txt" should do for now.
-- [ ] Add ability to move activities up and down
 
 ## Done
+- [X] Add ability to move activities up and down
 - [X] Feature that tells the user the time at which the day ends
 - [X] Make the program remember the number of daily working hours. This is added to `time.txt`
 - [X] File validation
