@@ -130,7 +130,7 @@ def adding(): # This function is for adding a new activity to the program
 		json.dump(activity_obj, json_file, indent=1) # This dumps all the of the Python-style updates above into data.txt, BUT this time it formats them into JSON objects
 
 
-# This function refreshes the columns. It takes an argument "clear_screen". When set to True, the screen will be cleared to make the whole thing look a little nicer. The default value of this argument is False
+# This function refreshes the columns. It has the parameter "clear_screen" which takes an argument of True or False. False is the default value. When set to True, the screen will be cleared to make the whole thing look a little nicer.
 def view_and_update(clear_screen=False):
 # clears the screen
 	global fixed, rigid, start_time, name, length, ActLen, rigid_surpless, daily_mins # TODO This globalises the variables so that they can be used in this function. I need to understand why this is needed.
@@ -252,31 +252,22 @@ def move():
 
 			else:
 				# Backup the task that is currently occupying the position chosen by the user
-				# TODO find a neater approach to this
-				fixed_old = fixed[new_position]
-				rigid_old = rigid[new_position]
-				rigid_old = rigid[new_position]
-				rigid_old = rigid[new_position]
-				# Notice how we did not move the the start_time. This is because it may lead to an issue where if you move the start_time activity to become the first in the list (i.e., at the index of 0) the program will interpret this as the new start time of the DAY.
-				# Also, notice how we did not move ActLen. This is because ActLen is calculated whenever we execute view_and_update. So, there is really no point in moving it.
-				name_old = name[new_position]
-				length_old = length[new_position]
+				backup = [] # This is a list to store our backup
+				backup_starting_position = 0 # This is the starting position (this will become relevant shortly)
+
+				for old_stat in list_of_stats: # Loop around the list_of_stats
+					backup.append(old_stat[new_position]) # Append the old_stat that is currently occupying the position chosen by the user to the backup[] list
 
 				# Write the content of the chosen task to the new position
-				# TODO find a neater approach to this
-				fixed[new_position] = fixed[chosen_task]
-				rigid[new_position] = rigid[chosen_task]
-				name[new_position] = name[chosen_task]
-				length[new_position] = length[chosen_task]
+				for writer in list_of_stats: # Loop around the list_of_stats, again...
+					writer[new_position] = writer[chosen_task] # Write the content of the chosen task to the new position
 
 				# Do the reverse to the above. In other words, write the content of the task that is currently occupying the position chosen by the user (i.e., "new_position") to the position that is occupied by "chosen_task"
-				# TODO find a neater approach to this
-				fixed[chosen_task] = fixed_old
-				rigid[chosen_task] = rigid_old
-				name[chosen_task] = name_old
-				length[chosen_task] = length_old
+				for reverse_writer in list_of_stats: # Loop around the list_of_stats (yet again)
+					reverse_writer[chosen_task] = backup[backup_starting_position] # Write out the content from our backup to the position that is occupied by "chosen_task"
+					backup_starting_position += 1 # Increment backup_starting_position by 1
 
-				json.dump(activity_obj, json_file, indent=1)
+				json.dump(activity_obj, json_file, indent=1) # Dump the above into the text file
 
 
 # * Run, run, run, RUN!
@@ -314,8 +305,6 @@ while True: # A simple loop to make the program continuous
 		else:
 			for l in list_of_stats: # This loops around list_of_stats and deletes the corresponding activity number (which was entered by the user)
 				del l[activity_number]
-
-		view_and_update(True)
 
 	elif repeat == "3":
 		view_and_update(True)
