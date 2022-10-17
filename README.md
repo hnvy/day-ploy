@@ -33,7 +33,7 @@ Feel free to contact me if you get stuck, I will be more than happy to help!
   - You can now move tasks up and down.
   - The program now clears the screen to give you a better experience.
 - 24/08/2022
-  - You can now find out the tiem at which the day ends (it is printed out as `$$END$$` at the end of the activity list)
+  - You can now find out the time at which the day ends (it is printed out as `$$END$$` at the end of the activity list)
 - 23/08/2022
   - The program now adds the number of daily work hours to `time.txt`. This means that the program will now remember the number of work hours. I wanted to avoid the use of another text file, but, unfortunately, this turned out to be the easiest way. If you have another idea, let me know!
 - 09/08/2022
