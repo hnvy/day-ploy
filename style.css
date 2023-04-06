@@ -1,0 +1,34 @@
+body {
+    background: rgba(24, 24, 24, 60%);
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+}
+.container form {
+    margin-bottom: 32px;
+}
+
+.container form input {
+    margin-top: 16px;
+}
+
+#tasktime {
+    width: 32px;
+}
+.submit {
+    width: 64px;
+    height: 32px;
+    background: darkseagreen;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin-top: 8px;
+    margin-left: 8px;
+}
