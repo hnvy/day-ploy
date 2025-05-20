@@ -18,6 +18,8 @@ Very simple:
 2. Enter the desired number of minutes which you would like to spend on each of these activities
 3. Let the program give you a more realistic number of minutes for each of your activities
 
+![Overview](Overview.png)
+
 # Contributing
 Not sure what you should be aiming for? Read [this guide](https://drive.google.com/folderview?id=11RUZw8MVdKXdb8HpuYR5epiktKPhkoOO) to find out about how the original SuperMemo Plan is supposed to work.
 
